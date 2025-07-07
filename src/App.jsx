@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import Tours from './components/Tours'
 import './App.css'
 
-const URL = 'https://course-api.com/react-tours-project'
+const URL = '/react-tours-project';
 
 function App() {
   const [tours, setTours] = useState([])
@@ -13,19 +13,29 @@ function App() {
     setTours(newTours)
   }
 
-  const fetchTours = async () => {
-    setLoading(true)
-    try {
-      const response = await fetch(URL)
-      const data = await response.json()
-
-      setLoading(false)
-      setTours(data)
-    } catch (error) {
-      setLoading(false)
-      console.log(error)
+ const fetchTours = async () => {
+  setLoading(true)
+  try {
+    const response = await fetch(URL)
+    if (!response.ok) { // Verifica se a resposta HTTP foi bem-sucedida (status 200-299)
+      console.log(`HTTP error! status: ${response.status}`);
+      setLoading(false);
+      return; 
     }
+    const data = await response.json()
+    console.log('Dados recebidos da API:', data) 
+
+    setLoading(false)
+    setTours(data)
+    console.log('Estado tours atualizado para:', data); 
+  } catch (error) {
+    setLoading(false)
+    console.error('Erro ao buscar tours:', error) 
   }
+}
+
+
+console.log('Tours no estado do App:', tours);
 
   useEffect(() => {
     fetchTours()
